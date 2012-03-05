@@ -14,13 +14,8 @@ from threading import Thread
 from subprocess import Popen, PIPE
 from datetime import datetime
 from datetime import timedelta
+from Queue import Empty
 import filecmp
-
-# For RabbitMQ
-from kombu.connection import BrokerConnection
-from kombu.messaging import Exchange, Queue, Consumer, Producer
-from kombu.exceptions import MessageStateError
-from kombu.simple import SimpleQueue
 
 from api_clients import api_client
 
@@ -42,29 +37,15 @@ except Exception, e:
     sys.exit()
 
 class PypoFetch(Thread):
-    def __init__(self, q):
+    def __init__(self, pypoFetch_q, pypoPush_q):
         Thread.__init__(self)
         self.api_client = api_client.api_client_factory(config)
         self.set_export_source('scheduler')
-        self.queue = q
+        self.fetch_queue = pypoFetch_q
+        self.push_queue = pypoPush_q
         self.schedule_data = []
         logger = logging.getLogger('fetch')
         logger.info("PypoFetch: init complete")
-
-    def init_rabbit_mq(self):
-        logger = logging.getLogger('fetch')
-        logger.info("Initializing RabbitMQ stuff")
-        try:
-            schedule_exchange = Exchange("airtime-pypo", "direct", durable=True, auto_delete=True)
-            schedule_queue = Queue("pypo-fetch", exchange=schedule_exchange, key="foo")
-            connection = BrokerConnection(config["rabbitmq_host"], config["rabbitmq_user"], config["rabbitmq_password"], config["rabbitmq_vhost"])
-            channel = connection.channel()
-            self.simple_queue = SimpleQueue(channel, schedule_queue)
-        except Exception, e:
-            logger.error(e)
-            return False
-            
-        return True
     
     """
     Handle a message from RabbitMQ, put it into our yucky global var.
@@ -73,7 +54,7 @@ class PypoFetch(Thread):
     def handle_message(self, message):
         try:        
             logger = logging.getLogger('fetch')
-            logger.info("Received event from RabbitMQ: %s" % message)
+            logger.info("Received event from Pypo Message Handler: %s" % message)
             
             m =  json.loads(message)
             command = m['event_type']
@@ -95,7 +76,11 @@ class PypoFetch(Thread):
                 logger.info("Cancel current show command received...")
                 self.stop_current_show()
         except Exception, e:
-            logger.error("Exception in handling RabbitMQ message: %s", e)
+            import traceback
+            top = traceback.format_exc()
+            logger.error('Exception: %s', e)
+            logger.error("traceback: %s", top)
+            logger.error("Exception in handling Message Handler message: %s", e)
         
     def stop_current_show(self):
         logger = logging.getLogger('fetch')
@@ -127,7 +112,7 @@ class PypoFetch(Thread):
             # if empty line
             if not line:
                 continue
-            key, value = line.split('=')
+            key, value = line.split(' = ')
             key = key.strip()
             value = value.strip()
             value = value.replace('"', '')
@@ -307,12 +292,11 @@ class PypoFetch(Thread):
         scheduled_data = dict()
         scheduled_data['liquidsoap_playlists'] = liquidsoap_playlists
         scheduled_data['schedule'] = playlists
-        self.queue.put(scheduled_data)
+        self.push_queue.put(scheduled_data)
 
         # cleanup
         try: self.cleanup(self.export_source)
         except Exception, e: logger.error("%s", e)
-
 
     """
     In this function every audio file is cut as necessary (cue_in/cue_out != 0) 
@@ -487,36 +471,54 @@ class PypoFetch(Thread):
         if status == 1:
             logger.info("Bootstrap schedule received: %s", self.schedule_data)
             self.process_schedule(self.schedule_data, "scheduler", True)
-        logger.info("Bootstrap complete: got initial copy of the schedule")
 
-
-        while not self.init_rabbit_mq():
-            logger.error("Error connecting to RabbitMQ Server. Trying again in few seconds")
-            time.sleep(5)
-
-        loops = 1        
+        loops = 1
         while True:
             logger.info("Loop #%s", loops)
             try:               
                 try:
-                    message = self.simple_queue.get(block=True)
-                    self.handle_message(message.payload)
-                    # ACK the message to take it off the queue
-                    message.ack()
-                except MessageStateError, m:
-                    logger.error("Message ACK error: %s", m)
+                    """
+                    our simple_queue.get() requires a timeout, in which case we
+                    fetch the Airtime schedule manually. It is important to fetch
+                    the schedule periodically because if we didn't, we would only 
+                    get schedule updates via RabbitMq if the user was constantly 
+                    using the Airtime interface. 
+                    
+                    If the user is not using the interface, RabbitMq messages are not
+                    sent, and we will have very stale (or non-existent!) data about the 
+                    schedule.
+                    
+                    Currently we are checking every 3600 seconds (1 hour)
+                    """
+                    message = self.fetch_queue.get(block=True, timeout=3600)
+                    self.handle_message(message)
+                except Empty, e:
+                    """
+                    Queue timeout. Fetching data manually
+                    """
+                    raise
+                except Exception, e:
+                    """
+                    sleep 5 seconds so that we don't spin inside this
+                    while loop and eat all the CPU
+                    """
+                    time.sleep(5)
+                    
+                    """
+                    There is a problem with the RabbitMq messenger service. Let's
+                    log the error and get the schedule via HTTP polling
+                    """
+                    logger.error("Exception, %s", e)
+                    raise
             except Exception, e:
                 """
-                There is a problem with the RabbitMq messenger service. Let's
-                log the error and get the schedule via HTTP polling
+                Fetch Airtime schedule manually
                 """
-                logger.error("Exception, %s", e)
-                
                 status, self.schedule_data = self.api_client.get_schedule()
                 if status == 1:
                     self.process_schedule(self.schedule_data, "scheduler", False)
 
-            loops += 1        
+            loops += 1
 
     """
     Main loop of the thread:
