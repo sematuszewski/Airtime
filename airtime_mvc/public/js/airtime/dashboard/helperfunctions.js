@@ -186,7 +186,7 @@ function audioPreview(filename, elemID){
         ready: function () {
             $(this).jPlayer("setMedia", media).jPlayer("play");
         },
-        swfPath: "/js/jplayer",
+        solution: "html",
         supplied: supplied,
         wmode:"window"
     });
