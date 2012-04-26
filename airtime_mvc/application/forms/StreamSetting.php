@@ -73,13 +73,13 @@ class Application_Form_StreamSetting extends Zend_Form
         if(isset($data['output_sound_device'])){
             $d = array();
             $d["output_sound_device"] = $data['output_sound_device'];
-            $d["icecast_vorbis_metadata"] = $data['icecast_vorbis_metadata'];
             if(isset($data['output_sound_device_type'])){
                 $d["output_sound_device_type"] = $data['output_sound_device_type'];
             }
-            $d["streamFormat"] = $data['streamFormat'];
-            $this->populate($d);
         }
+        $d["icecast_vorbis_metadata"] = $data['icecast_vorbis_metadata'];
+        $d["streamFormat"] = $data['streamFormat'];
+        $this->populate($d);
         return true;
     }
 }
