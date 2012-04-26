@@ -190,29 +190,16 @@ class PreferenceController extends Zend_Controller_Action
             $post_data = $request->getPost();
 
             $error = false;
-            $values = array();
-            for($i=1; $i<=$num_of_stream; $i++){
-                if(!$form->getSubForm("s".$i."_subform")->isValid($post_data["s".$i."_data"])){
-                    $error = true;
-                }else{
-                    // getValues returne array of size 1, so reorganized it
-                    foreach($form->getSubForm("s".$i."_subform")->getValues() as $key => $d){
-                        $values[$key] = $d;
-                    }
-                }
-            }
+            $values = $post_data;
+            
             if($form->isValid($post_data)){
                 if(Application_Model_Preference::GetPlanLevel() == 'disabled'){
                     $values['output_sound_device'] = $post_data['output_sound_device'];
-                    if($values['output_sound_device'] == 1){
-                        $values['output_sound_device_type'] = $post_data['output_sound_device_type'];
-                    }
                 }
 
-                
-                $values['icecast_vorbis_metadata'] = $post_data['icecast_vorbis_metadata'];
-                $values['streamFormat'] = $post_data['streamFormat']; 
-
+                $values['icecast_vorbis_metadata'] = $form->getValue('icecast_vorbis_metadata');
+                $values['output_sound_device_type'] = $form->getValue('output_sound_device_type');
+                $values['streamFormat'] = $form->getValue('streamFormat');
             }
             if(!$error){
                 Application_Model_StreamSetting::setStreamSetting($values);
