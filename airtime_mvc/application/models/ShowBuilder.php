@@ -49,7 +49,7 @@ class Application_Model_ShowBuilder {
      * @param DateTime $p_startsDT
      * @param DateTime $p_endsDT
      */
-    public function __construct($p_startDT, $p_endDT, $p_opts) {
+    public function __construct($p_startDT, $p_endDT, $p_opts = array()) {
 
         $this->startDT = $p_startDT;
         $this->endDT = $p_endDT;
@@ -350,10 +350,10 @@ class Application_Model_ShowBuilder {
         $outdated = false;
         $shows = Application_Model_Show::getShows($this->startDT, $this->endDT);
         
-        if ($this->opts["showFilter"] !== 0) {
+        if (isset($this->opts["showFilter"]) && $this->opts["showFilter"] !== 0) {
             $include[] = $this->opts["showFilter"];
         }
-        else if ($this->opts["myShows"] === 1) {
+        else if (isset($this->opts["myShows"]) && $this->opts["myShows"] === 1) {
 
             $include = $this->getUsersShows();
         }
@@ -398,11 +398,11 @@ class Application_Model_ShowBuilder {
         $display_items = array();
 
         $shows = array();
-        if ($this->opts["myShows"] === 1) {
+        if (isset($this->opts["myShows"]) && $this->opts["myShows"] === 1) {
 
             $shows = $this->getUsersShows();
         }
-        else if ($this->opts["showFilter"] !== 0) {
+        else if (isset($this->opts["showFilter"]) && $this->opts["showFilter"] !== 0) {
             $shows[] = $this->opts["showFilter"];
         }
 
