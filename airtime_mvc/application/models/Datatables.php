@@ -1,6 +1,24 @@
 <?php
 
 class Application_Model_Datatables {
+    
+    public static function createRequestFromSettings($columns, $settings) 
+    {
+        $request = array();
+        
+        $numColumns = count($columns);
+        for ($i = 0; $i < $numColumns; $i++) {
+            $request["mDataProp_".$i] = $columns[$i]["mDataProp"];
+        }
+        
+        //iSortingCols
+        //"iSortCol_".$i
+        //"sSortDir_".$i
+        
+        $request["iDisplayStart"] = $settings["iStart"];
+        $request["iDisplayLength"] = $settings["iLength"];
+        $request["iColumns"] = $numColumns;
+    }
 	
 	/*
 	 * query used to return data for a paginated/searchable datatable.

@@ -861,6 +861,53 @@ class Application_Model_Preference
     public static function GetSystemEmail() {
         return self::GetValue("system_email");
     }
+    
+    public static function SetDatatableLibrarySettings($data) {
+        
+        for ($i = 0, $length = count($data['ColReorder']); $i < $length; $i++) {
+            $data['ColReorder'][i] = (int) $data['ColReorder'][i];
+        }
+        
+        for ($i = 0, $length = count($data['abVisCols']); $i < $length; $i++) {
+            $data['abVisCols'][i] = $data['abVisCols'][i] === "true" ? true : false;
+        }
+        
+        for ($i = 0, $length = count($data['aaSorting']); $i < $length; $i++) {
+            //column number
+            $data['aaSorting'][i][0] = (int) $data['aaSorting'][i][0];
+            //direction (0 or 1)
+            $data['aaSorting'][i][2] = (int) $data['aaSorting'][i][2];
+        }
+        
+        $data['iCreate'] = (int) $data['iCreate'];
+        $data['iEnd'] = (int) $data['iEnd'];
+        $data['iLength'] = (int) $data['iLength'];
+        $data['iStart'] = (int) $data['iStart'];
+        
+        $data = serialize($data);
+        Application_Model_Preference::SetValue("library_datatable", $data, true);
+    }
+    
+    public static function GetDatatableLibrarySettings() {
+        
+        $data = Application_Model_Preference::GetValue("library_datatable", true);
+        if ($data != "") {
+            $data = unserialize($data);    
+        }
+        
+        return $data;
+    }
+    
+    public static function GetDatatableLibraryColumns() {
+        $file = __DIR__."/../configs/datatables/library.ini";
+        $columns = parse_ini_file($file, true);
+        
+        Logging::debug("parsing library.ini");
+        Logging::debug($columns);
+        
+        return $columns;
+    }
+    
     /* User specific preferences end */
 
     public static function ShouldShowPopUp(){

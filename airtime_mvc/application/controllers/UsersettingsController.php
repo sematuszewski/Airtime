@@ -39,8 +39,7 @@ class UsersettingsController extends Zend_Controller_Action
         $request = $this->getRequest();
         $settings = $request->getParam("settings");
 
-        $data = serialize($settings);
-        Application_Model_Preference::SetValue("library_datatable", $data, true);
+        Application_Model_Preference::SetDatatableLibrarySettings($settings);
     }
 
     public function getLibraryDatatableAction() {
