@@ -2,6 +2,10 @@
 
 class Application_Model_Datatables {
     
+    /*
+     * This is just avoiding anything to do with seraching right now since the saved settings
+     * always remove any search terms
+     */
     public static function createRequestFromSettings($columns, $settings) 
     {
         $request = array();
@@ -11,13 +15,22 @@ class Application_Model_Datatables {
             $request["mDataProp_".$i] = $columns[$i]["mDataProp"];
         }
         
-        //iSortingCols
-        //"iSortCol_".$i
-        //"sSortDir_".$i
-        
+        $numSortingColumns = count($settings["aaSorting"]);
+        for ($i = 0; $i < $numSortingColumns; $i++) {
+            $request["iSortCol_".$i] = $settings["aaSorting"][$i][0];
+            $request["sSortDir_".$i] = $settings["aaSorting"][$i][1];
+        }
+                
+        $request["iSortingCols"] = $numSortingColumns;
         $request["iDisplayStart"] = $settings["iStart"];
         $request["iDisplayLength"] = $settings["iLength"];
         $request["iColumns"] = $numColumns;
+        
+        $request["type"] = 0;
+        $request["sEcho"] = 0;
+        $request["sSearch"] = "";
+        
+        return $request;
     }
 	
 	/*
@@ -26,7 +39,7 @@ class Application_Model_Datatables {
 	public static function findEntries($con, $displayColumns, $fromTable, $data, $dataProp = "aaData")
 	{
 		$where = array();
-	
+		
 		if ($data["sSearch"] !== "") {
 			$searchTerms = explode(" ", $data["sSearch"]);
 		}
@@ -37,7 +50,7 @@ class Application_Model_Datatables {
 		$sql = $selectorCount." FROM ".$fromTable;
 		$sqlTotalRows = $sql;
 	
-		if (isset($searchTerms)) {
+		if (isset($searchTerms)) {   
 			$searchCols = array();
 			for ($i = 0; $i < $data["iColumns"]; $i++) {
 				if ($data["bSearchable_".$i] == "true") {

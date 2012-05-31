@@ -598,7 +598,7 @@ Logging::log("getting media! - 2");
     }
 
     public static function searchLibraryFiles($datatables) {
-
+        
     	$con = Propel::getConnection(CcFilesPeer::DATABASE_NAME);
 
         $displayColumns = array("id", "track_title", "artist_name", "album_title", "genre", "length",
@@ -671,7 +671,7 @@ Logging::log("getting media! - 2");
             default:
                 $fromTable = $unionTable;
         }
-
+       
         $results = Application_Model_Datatables::findEntries($con, $displayColumns, $fromTable, $datatables);
 
         //Used by the audio preview functionality in the library.

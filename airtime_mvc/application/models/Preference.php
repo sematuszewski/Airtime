@@ -874,9 +874,9 @@ class Application_Model_Preference
         
         for ($i = 0, $length = count($data['aaSorting']); $i < $length; $i++) {
             //column number
-            $data['aaSorting'][i][0] = (int) $data['aaSorting'][i][0];
+            $data['aaSorting'][$i][0] = (int) $data['aaSorting'][$i][0];
             //direction (0 or 1)
-            $data['aaSorting'][i][2] = (int) $data['aaSorting'][i][2];
+            $data['aaSorting'][$i][2] = (int) $data['aaSorting'][$i][2];
         }
         
         $data['iCreate'] = (int) $data['iCreate'];
@@ -902,8 +902,8 @@ class Application_Model_Preference
         $file = __DIR__."/../configs/datatables/library.ini";
         $columns = parse_ini_file($file, true);
         
-        Logging::debug("parsing library.ini");
-        Logging::debug($columns);
+        //Logging::debug("parsing library.ini");
+        //Logging::debug($columns);
         
         return $columns;
     }

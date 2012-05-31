@@ -32,6 +32,9 @@ class ShowbuilderController extends Zend_Controller_Action
             
             $columns = Application_Model_Preference::GetDatatableLibraryColumns();
             $dt_request = Application_Model_Datatables::createRequestFromSettings($columns, $data);
+            $files = Application_Model_StoredFile::searchLibraryFiles($dt_request);
+            Logging::debug("Found files.");
+            Logging::debug($files);
             
             $libraryTable = json_encode($data);
             $this->view->headScript()->appendScript("localStorage.setItem( 'datatables-library', JSON.stringify($libraryTable) );");
