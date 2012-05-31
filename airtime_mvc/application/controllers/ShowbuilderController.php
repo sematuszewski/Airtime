@@ -33,6 +33,13 @@ class ShowbuilderController extends Zend_Controller_Action
             $columns = Application_Model_Preference::GetDatatableLibraryColumns();
             $dt_request = Application_Model_Datatables::createRequestFromSettings($columns, $data);
             $files = Application_Model_StoredFile::searchLibraryFiles($dt_request);
+            
+            //assign files to the view to create the initial template for datatables.
+            //will need the columns to compare to the settings for purposes of column display/reorder plugins.
+            $this->view->library_columns = $columns;
+            $this->view->library_settings = $settings;
+            $this->view->library_files = $files;
+            
             Logging::debug("Found files.");
             Logging::debug($files);
             
