@@ -510,8 +510,6 @@ class ScheduleController extends Zend_Controller_Action
         $userInfo = Zend_Auth::getInstance()->getStorage()->read();
         $user = new Application_Model_User($userInfo->id);
 
-        $isSaas = Application_Model_Preference::GetPlanLevel() == 'disabled'?false:true;
-
         $showInstanceId = $this->_getParam('id');
         // $type is used to determine if this edit is for the specific instance or for all
         // repeating shows. It's value is either "instance","rebroadcast", or "all"
@@ -618,50 +616,48 @@ class ScheduleController extends Zend_Controller_Action
         
         $formLive->populate($show->getLiveStreamInfo());
 
-        if(!$isSaas){
-            $formRecord = new Application_Form_AddShowRR();
-            $formAbsoluteRebroadcast = new Application_Form_AddShowAbsoluteRebroadcastDates();
-            $formRebroadcast = new Application_Form_AddShowRebroadcastDates();
+        $formRecord = new Application_Form_AddShowRR();
+        $formAbsoluteRebroadcast = new Application_Form_AddShowAbsoluteRebroadcastDates();
+        $formRebroadcast = new Application_Form_AddShowRebroadcastDates();
 
-            $formRecord->removeDecorator('DtDdWrapper');
-            $formAbsoluteRebroadcast->removeDecorator('DtDdWrapper');
-            $formRebroadcast->removeDecorator('DtDdWrapper');
+        $formRecord->removeDecorator('DtDdWrapper');
+        $formAbsoluteRebroadcast->removeDecorator('DtDdWrapper');
+        $formRebroadcast->removeDecorator('DtDdWrapper');
 
-            $this->view->rr = $formRecord;
-            $this->view->absoluteRebroadcast = $formAbsoluteRebroadcast;
-            $this->view->rebroadcast = $formRebroadcast;
+        $this->view->rr = $formRecord;
+        $this->view->absoluteRebroadcast = $formAbsoluteRebroadcast;
+        $this->view->rebroadcast = $formRebroadcast;
 
-            $formRecord->populate(array('add_show_record' => $show->isRecorded(),
-                                'add_show_rebroadcast' => $show->isRebroadcast()));
+        $formRecord->populate(array('add_show_record' => $show->isRecorded(),
+                            'add_show_rebroadcast' => $show->isRebroadcast()));
 
-            $formRecord->getElement('add_show_record')->setOptions(array('disabled' => true));
-
+        $formRecord->getElement('add_show_record')->setOptions(array('disabled' => true));
 
 
-            $rebroadcastsRelative = $show->getRebroadcastsRelative();
-            $rebroadcastFormValues = array();
-            $i = 1;
-            foreach ($rebroadcastsRelative as $rebroadcast){
-                $rebroadcastFormValues["add_show_rebroadcast_date_$i"] = $rebroadcast['day_offset'];
-                $rebroadcastFormValues["add_show_rebroadcast_time_$i"] = Application_Common_DateHelper::removeSecondsFromTime($rebroadcast['start_time']);
-                $i++;
-            }
-            $formRebroadcast->populate($rebroadcastFormValues);
 
-            $rebroadcastsAbsolute = $show->getRebroadcastsAbsolute();
-            $rebroadcastAbsoluteFormValues = array();
-            $i = 1;
-            foreach ($rebroadcastsAbsolute as $rebroadcast){
-                $rebroadcastAbsoluteFormValues["add_show_rebroadcast_date_absolute_$i"] = $rebroadcast['start_date'];
-                $rebroadcastAbsoluteFormValues["add_show_rebroadcast_time_absolute_$i"] = $rebroadcast['start_time'];
-                $i++;
-            }
-            $formAbsoluteRebroadcast->populate($rebroadcastAbsoluteFormValues);
-            if(!$isAdminOrPM){
-                $formRecord->disable();
-                $formAbsoluteRebroadcast->disable();
-                $formRebroadcast->disable();
-            }
+        $rebroadcastsRelative = $show->getRebroadcastsRelative();
+        $rebroadcastFormValues = array();
+        $i = 1;
+        foreach ($rebroadcastsRelative as $rebroadcast){
+            $rebroadcastFormValues["add_show_rebroadcast_date_$i"] = $rebroadcast['day_offset'];
+            $rebroadcastFormValues["add_show_rebroadcast_time_$i"] = Application_Common_DateHelper::removeSecondsFromTime($rebroadcast['start_time']);
+            $i++;
+        }
+        $formRebroadcast->populate($rebroadcastFormValues);
+
+        $rebroadcastsAbsolute = $show->getRebroadcastsAbsolute();
+        $rebroadcastAbsoluteFormValues = array();
+        $i = 1;
+        foreach ($rebroadcastsAbsolute as $rebroadcast){
+            $rebroadcastAbsoluteFormValues["add_show_rebroadcast_date_absolute_$i"] = $rebroadcast['start_date'];
+            $rebroadcastAbsoluteFormValues["add_show_rebroadcast_time_absolute_$i"] = $rebroadcast['start_time'];
+            $i++;
+        }
+        $formAbsoluteRebroadcast->populate($rebroadcastAbsoluteFormValues);
+        if(!$isAdminOrPM){
+            $formRecord->disable();
+            $formAbsoluteRebroadcast->disable();
+            $formRebroadcast->disable();
         }
         
         if(!$isAdminOrPM){

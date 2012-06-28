@@ -68,13 +68,11 @@ class PreferenceController extends Zend_Controller_Action
         $this->view->headScript()->appendFile($baseUrl.'/js/airtime/preferences/support-setting.js?'.$CC_CONFIG['airtime_version'],'text/javascript');
         $this->view->statusMsg = "";
 
-        $isSass = Application_Model_Preference::GetPlanLevel() == 'disabled'?false:true;
-
         $form = new Application_Form_SupportSettings();
         if ($request->isPost()) {
             $values = $request->getPost();
             if ($form->isValid($values)) {
-                if (!$isSass && $values["Publicise"] != 1){
+                if ($values["Publicise"] != 1){
                     Application_Model_Preference::SetSupportFeedback($values["SupportFeedback"]);
                     Application_Model_Preference::SetPublicise($values["Publicise"]);
                     if(isset($values["Privacy"])){
@@ -85,10 +83,8 @@ class PreferenceController extends Zend_Controller_Action
                     Application_Model_Preference::SetPhone($values["Phone"]);
                     Application_Model_Preference::SetEmail($values["Email"]);
                     Application_Model_Preference::SetStationWebSite($values["StationWebSite"]);
-                    if(!$isSass){
-                        Application_Model_Preference::SetSupportFeedback($values["SupportFeedback"]);
-                        Application_Model_Preference::SetPublicise($values["Publicise"]);
-                    }
+                    Application_Model_Preference::SetSupportFeedback($values["SupportFeedback"]);
+                    Application_Model_Preference::SetPublicise($values["Publicise"]);
 
                     $form->Logo->receive();
                     $imagePath = $form->Logo->getFileName();
@@ -97,7 +93,7 @@ class PreferenceController extends Zend_Controller_Action
                     Application_Model_Preference::SetStationCity($values["City"]);
                     Application_Model_Preference::SetStationDescription($values["Description"]);
                     Application_Model_Preference::SetStationLogo($imagePath);
-                    if(!$isSass && isset($values["Privacy"])){
+                    if(isset($values["Privacy"])){
                         Application_Model_Preference::SetPrivacyPolicyCheck($values["Privacy"]);
                     }
                 }
@@ -143,8 +139,6 @@ class PreferenceController extends Zend_Controller_Action
         $baseUrl = $request->getBaseUrl();
 
         $this->view->headScript()->appendFile($baseUrl.'/js/airtime/preferences/streamsetting.js?'.$CC_CONFIG['airtime_version'],'text/javascript');
-    
-        $isSaas = Application_Model_Preference::GetPlanLevel() == 'disabled'?false:true;
 
         // get current settings
         $temp = Application_Model_StreamSetting::getStreamSetting();
@@ -199,10 +193,8 @@ class PreferenceController extends Zend_Controller_Action
             $values = $post_data;
             
             if($form->isValid($post_data)){
-                if (!$isSaas) {
-                    $values['output_sound_device'] = $form->getValue('output_sound_device');
-                    $values['output_sound_device_type'] = $form->getValue('output_sound_device_type');
-                }
+                $values['output_sound_device'] = $form->getValue('output_sound_device');
+                $values['output_sound_device_type'] = $form->getValue('output_sound_device_type');
 
                 $values['icecast_vorbis_metadata'] = $form->getValue('icecast_vorbis_metadata');
                 $values['streamFormat'] = $form->getValue('streamFormat');
@@ -217,38 +209,36 @@ class PreferenceController extends Zend_Controller_Action
                 Application_Model_Preference::SetAutoTransition($values["auto_transition"]);
                 Application_Model_Preference::SetAutoSwitch($values["auto_switch"]);
                 
-                if (!$isSaas) {
-                    if (!Application_Model_Preference::GetMasterDjConnectionUrlOverride()) {
-                        $master_connection_url = "http://".$_SERVER['SERVER_NAME'].":".$values["master_harbor_input_port"]."/".$values["master_harbor_input_mount_point"];
-                        if (empty($values["master_harbor_input_port"]) || empty($values["master_harbor_input_mount_point"])) {
-                            Application_Model_Preference::SetMasterDJSourceConnectionURL('N/A');
-                        }
-                        else {
-                            Application_Model_Preference::SetMasterDJSourceConnectionURL($master_connection_url);
-                        }
-                    } else {
-                        Application_Model_Preference::SetMasterDJSourceConnectionURL($values["master_dj_connection_url"]);
-                    } 
-                    
-                    if (!Application_Model_Preference::GetLiveDjConnectionUrlOverride()) {  
-                        $live_connection_url = "http://".$_SERVER['SERVER_NAME'].":".$values["dj_harbor_input_port"]."/".$values["dj_harbor_input_mount_point"];
-                        if (empty($values["dj_harbor_input_port"]) || empty($values["dj_harbor_input_mount_point"])) {
-                            Application_Model_Preference::SetLiveDJSourceConnectionURL('N/A');
-                        }
-                        else {
-                            Application_Model_Preference::SetLiveDJSourceConnectionURL($live_connection_url);
-                        }
+                if (!Application_Model_Preference::GetMasterDjConnectionUrlOverride()) {
+                    $master_connection_url = "http://".$_SERVER['SERVER_NAME'].":".$values["master_harbor_input_port"]."/".$values["master_harbor_input_mount_point"];
+                    if (empty($values["master_harbor_input_port"]) || empty($values["master_harbor_input_mount_point"])) {
+                        Application_Model_Preference::SetMasterDJSourceConnectionURL('N/A');
                     }
                     else {
-                        Application_Model_Preference::SetLiveDJSourceConnectionURL($values["live_dj_connection_url"]);
+                        Application_Model_Preference::SetMasterDJSourceConnectionURL($master_connection_url);
                     }
-                    
-                    // extra info that goes into cc_stream_setting
-                    Application_Model_StreamSetting::SetMasterLiveSteamPort($values["master_harbor_input_port"]);
-                    Application_Model_StreamSetting::SetMasterLiveSteamMountPoint($values["master_harbor_input_mount_point"]);
-                    Application_Model_StreamSetting::SetDJLiveSteamPort($values["dj_harbor_input_port"]);
-                    Application_Model_StreamSetting::SetDJLiveSteamMountPoint($values["dj_harbor_input_mount_point"]);
+                } else {
+                    Application_Model_Preference::SetMasterDJSourceConnectionURL($values["master_dj_connection_url"]);
+                } 
+                
+                if (!Application_Model_Preference::GetLiveDjConnectionUrlOverride()) {  
+                    $live_connection_url = "http://".$_SERVER['SERVER_NAME'].":".$values["dj_harbor_input_port"]."/".$values["dj_harbor_input_mount_point"];
+                    if (empty($values["dj_harbor_input_port"]) || empty($values["dj_harbor_input_mount_point"])) {
+                        Application_Model_Preference::SetLiveDJSourceConnectionURL('N/A');
+                    }
+                    else {
+                        Application_Model_Preference::SetLiveDJSourceConnectionURL($live_connection_url);
+                    }
                 }
+                else {
+                    Application_Model_Preference::SetLiveDJSourceConnectionURL($values["live_dj_connection_url"]);
+                }
+                
+                // extra info that goes into cc_stream_setting
+                Application_Model_StreamSetting::SetMasterLiveSteamPort($values["master_harbor_input_port"]);
+                Application_Model_StreamSetting::SetMasterLiveSteamMountPoint($values["master_harbor_input_mount_point"]);
+                Application_Model_StreamSetting::SetDJLiveSteamPort($values["dj_harbor_input_port"]);
+                Application_Model_StreamSetting::SetDJLiveSteamMountPoint($values["dj_harbor_input_mount_point"]);
                 
                 // store stream update timestamp
                 Application_Model_Preference::SetStreamUpdateTimestamp();
