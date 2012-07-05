@@ -59,13 +59,11 @@ do
     shift
 done
 
-if [ "$mediamonitor" = "f" -a "$pypo" = "f" -a "$web" = "f" ]; then
-    #none of these install parameters were specified, so by default we install all of them
-    mediamonitor="t"
-    pypo="t"
-    showrecorder="t"
-    web="t"
-fi
+#none of these install parameters were specified, so by default we install all of them
+mediamonitor="t"
+pypo="t"
+showrecorder="t"
+web="t"
 
 # Absolute path to this script, e.g. /home/user/bin/foo.sh
 SCRIPT=`readlink -f $0`
@@ -165,29 +163,25 @@ export overwrite
 export preserve
 export liquidsoap_keep_alive
 
-set +e
-test "$mediamonitor" = "t" -o "$pypo" = "t"
-export python_service=$?
-set -e
+export python_service=0
 
 echo -e "\n******************************** Install Begin *********************************"
-rm -rf "/usr/lib/airtime"
-if [ "$python_service" -eq "0" ]; then
-    $AIRTIMEROOT/python_apps/python-virtualenv/virtualenv-install.sh
 
-    virtualenv_bin="/usr/lib/airtime/airtime_virtualenv/bin/"
-    . ${virtualenv_bin}activate
-    python $AIRTIMEROOT/python_apps/create-pypo-user.py
-fi
+echo "* Ensuring '/usr/lib/airtime' is clean"
+rm -rf "/usr/lib/airtime"
+
+$AIRTIMEROOT/python_apps/python-virtualenv/virtualenv-install.sh
+
+virtualenv_bin="/usr/lib/airtime/airtime_virtualenv/bin/"
+. ${virtualenv_bin}activate
+python $AIRTIMEROOT/python_apps/create-pypo-user.py
 
 
 if [ "$DO_UPGRADE" -eq "1" ]; then
     #do upgrade
     php --php-ini ${SCRIPTPATH}/airtime-php.ini ${SCRIPTPATH}/include/airtime-upgrade.php $@
-fi
-
-set +e
-if [ "$DO_UPGRADE" -eq "0" ]; then 
+else 
+    set +e
     php --php-ini ${SCRIPTPATH}/airtime-php.ini ${SCRIPTPATH}/include/airtime-install.php $@
     result=$?
 
@@ -196,29 +190,23 @@ if [ "$DO_UPGRADE" -eq "0" ]; then
         echo "There was an error during install. Exit code $result"
         exit 1
     fi
+    set -e
 fi
-set -e
+
 
 export airtime_service_start='t'
 $SCRIPTPATH/include/airtime-copy-files.sh
 $SCRIPTPATH/include/airtime-initialize.sh $@
 
-if [ "$mediamonitor" = "t" -o "$pypo" = "t" ]; then
-    #deactivate virtualenv
-    deactivate
-fi
-
+#deactivate virtualenv
+deactivate
 
 /usr/lib/airtime/utils/rabbitmq-update-pid.sh > /dev/null
 
-touch /usr/share/airtime/public/index.php
+#only run airtime-check-system if all components were installed
+echo -e "\n*** Verifying your system environment, running airtime-check-system ***"
+sleep 15
 
-if [ "$python_service" -eq "0" ]; then
-    #only run airtime-check-system if all components were installed
-    echo -e "\n*** Verifying your system environment, running airtime-check-system ***"
-    sleep 15
-
-    airtime-check-system --no-color
-fi
+airtime-check-system --no-color
 
 echo -e "\n******************************* Install Complete *******************************"

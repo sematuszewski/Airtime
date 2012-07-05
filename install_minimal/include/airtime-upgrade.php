@@ -30,7 +30,6 @@ function pause()
 }
 
 AirtimeInstall::DbConnect(true);
-$con = Propel::getConnection();
 
 $version = AirtimeInstall::GetVersionInstalled();
 

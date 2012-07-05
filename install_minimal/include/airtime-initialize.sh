@@ -14,12 +14,8 @@ SCRIPTPATH=`dirname $SCRIPT`
 
 AIRTIMEROOT=$SCRIPTPATH/../../
 
-if [ "$mediamonitor" = "t" ]; then
-    python $AIRTIMEROOT/python_apps/media-monitor/install/media-monitor-initialize.py
-fi
-if [ "$pypo" = "t" ]; then
-    python $AIRTIMEROOT/python_apps/pypo/install/pypo-initialize.py
-fi
+python $AIRTIMEROOT/python_apps/media-monitor/install/media-monitor-initialize.py
+python $AIRTIMEROOT/python_apps/pypo/install/pypo-initialize.py
 
 chmod 600 /etc/monit/conf.d/monit-airtime-generic.cfg
 chmod 600 /etc/monit/conf.d/monit-airtime-liquidsoap.cfg
@@ -38,14 +34,8 @@ invoke-rc.d monit restart
 sleep 1
 
 set +e
-
-if [ "$mediamonitor" = "t" ]; then
-    monit monitor airtime-media-monitor
-fi
-if [ "$pypo" = "t" ]; then
-    monit monitor airtime-playout
-    monit monitor airtime-liquidsoap
-fi
-
+monit monitor airtime-media-monitor
+monit monitor airtime-playout
+monit monitor airtime-liquidsoap
 monit monitor rabbitmq-server
 set -e
