@@ -23,6 +23,8 @@ class UserController extends Zend_Controller_Action
         $js_files = array(
             '/js/datatables/js/jquery.dataTables.js?',
             '/js/datatables/plugin/dataTables.pluginAPI.js?',
+            '/js/libs/underscore-min.js?',
+            '/js/libs/backbone-min.js?',
             '/js/airtime/user/user.js?'
         );
 
@@ -47,8 +49,8 @@ class UserController extends Zend_Controller_Action
 
             if ($form->isValid($formData)) {
 
-                if (isset($CC_CONFIG['demo']) && $CC_CONFIG['demo'] == 1 
-                        && $formData['login'] == 'admin' 
+                if (isset($CC_CONFIG['demo']) && $CC_CONFIG['demo'] == 1
+                        && $formData['login'] == 'admin'
                         && $formData['user_id'] != 0) {
                     $this->view->form = $form;
                     $this->view->successMessage = "<div class='errors'>"._("Specific action is not allowed in demo version!")."</div>";
@@ -105,7 +107,6 @@ class UserController extends Zend_Controller_Action
     {
         $post = $this->getRequest()->getPost();
         $users = Application_Model_User::getUsersDataTablesInfo($post);
-
         die(json_encode($users));
     }
 
@@ -113,6 +114,7 @@ class UserController extends Zend_Controller_Action
     {
         $id = $this->_getParam('id');
         $this->view->entries = Application_Model_User::GetUserData($id);
+        die(json_encode($this->view->entries));
     }
 
     public function removeUserAction()
@@ -131,7 +133,7 @@ class UserController extends Zend_Controller_Action
         # only delete when valid action is selected for the owned files
         if (! in_array($files_action, $valid_actions) ) {
             return;
-        } 
+        }
 
         $userInfo = Zend_Auth::getInstance()->getStorage()->read();
         $userId = $userInfo->id;

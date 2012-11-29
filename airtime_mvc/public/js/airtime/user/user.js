@@ -1,3 +1,4 @@
+
 function populateForm(entries){
     //$('#user_details').show();
         
@@ -25,7 +26,7 @@ function populateForm(entries){
 
 function rowClickCallback(row_id){
       $.ajax({ url: baseUrl+'/User/get-user-data/id/'+ row_id +'/format/json', dataType:"json", success:function(data){
-        populateForm(data.entries);
+        populateForm(data);
 	  }});    
 }
 
@@ -93,6 +94,87 @@ function populateUserTable() {
 }
 
 $(document).ready(function() {
+ // backbone stuff start
+
+
+    var TemplateManager = {
+        templates: {},
+
+        get: function(id, callback){
+            var template = this.templates[id];
+            if (template) {
+              callback(template);
+            
+            } else {
+            
+              var that = this;
+              $.get(baseUrl+"/js/backbone/templates/" + id + ".html", function(template){
+                    var $tmpl = template;
+                    that.templates[id] = $tmpl;
+                    callback($tmpl);
+                });
+            }
+        }
+    }
+
+
+    var UserRouter = Backbone.Router.extend({
+        routes: {
+            "": "index"
+        },
+        
+        index: function() {
+        }
+    })
+
+    var router = new UserRouter();
+    Backbone.history.start();
+
+    var UserModel = Backbone.Model.extend({
+        url: function() {
+            return '/User/get-user-data/id/'+this.id+'/format/json';
+        },
+        initialize: function(){
+            
+        },
+        defaults: {
+            id: 0,
+            login: ""
+        }
+    })
+
+    var UserView = Backbone.View.extend({
+        template: 'user/userForm',
+        initialize: function(){
+            var that = this;
+            this.model.fetch({
+                success: function(user){
+                    that.render();
+                }
+            });
+        },
+        render: function(){
+            var that = this;
+            TemplateManager.get(this.template, function(template){
+                var compiled = _.template(template);
+                var html = compiled(that.model.toJSON());
+                that.$el.html(compiled(that.model.toJSON()));
+                that.$el.find("#type").val(that.model.get('type'));
+            });
+            return this;
+        }
+    })
+    
+    var user = new UserModel({id:1});
+
+    var userView = new UserView({el: $("#user_details"), model: user });
+
+    //backbone stuff end
+    
+    
+    
+    
+    
     populateUserTable();
     
     //$('#user_details').hide();
