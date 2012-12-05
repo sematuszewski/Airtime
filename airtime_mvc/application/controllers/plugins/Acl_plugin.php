@@ -109,8 +109,7 @@ class Zend_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abstract
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
         $controller = strtolower($request->getControllerName());
-
-        if (in_array($controller, array("api", "auth"))) {
+        if (in_array($controller, array("api", "auth", "filerest"))) {
 
             $this->setRoleName("G");
         } elseif (!Zend_Auth::getInstance()->hasIdentity()) {
