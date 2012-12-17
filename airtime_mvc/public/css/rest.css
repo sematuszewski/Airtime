@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+div .rest-errors {
+    background: none repeat scroll 0 0 #C6B4B4;
+    border: 1px solid #C83F3F;
+    color: #902D2D;
+    font-size: 11px;
+    margin: 1px 0px 1px 0px;
+    padding: 2px 4px;
+}

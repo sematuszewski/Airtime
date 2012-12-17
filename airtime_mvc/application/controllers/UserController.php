@@ -25,6 +25,7 @@ class UserController extends Zend_Controller_Action
             '/js/datatables/plugin/dataTables.pluginAPI.js?',
             '/js/libs/underscore-min.js?',
             '/js/libs/backbone-min.js?',
+            '/js/libs/backbone-validation-min.js?',
             '/js/airtime/user/user.js?'
         );
 
@@ -34,6 +35,7 @@ class UserController extends Zend_Controller_Action
         }
 
         $this->view->headLink()->appendStylesheet($baseUrl.'/css/users.css?'.$CC_CONFIG['airtime_version']);
+        $this->view->headLink()->appendStylesheet($baseUrl.'/css/rest.css?'.$CC_CONFIG['airtime_version']);
 
         $form = new Application_Form_AddUser();
 

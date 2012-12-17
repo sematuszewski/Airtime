@@ -307,6 +307,8 @@ class LocaleController extends Zend_Controller_Action
             "DJ" => _("DJ"),
             "Program Manager" => _("Program Manager"),
             "Guest" => _("Guest"),
+            "Value is required and can't be empty" => _("Value is required and can't be empty"),
+            "'%s' is no valid email address in the basic format local-part@hostname" => _("'%s' is no valid email address in the basic format local-part@hostname"),
             //dataTables/ColVis.js
             "Show / hide columns" => _("Show / hide columns"),
             //datatables.columnFilter.js

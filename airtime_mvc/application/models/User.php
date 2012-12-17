@@ -88,7 +88,9 @@ class Application_Model_User
     public function setPassword($password)
     {
         $user = $this->_userInstance;
-        $user->setDbPass(md5($password));
+        if ($password != 'xxxxxx') {
+            $user->setDbPass(md5($password));
+        }
     }
 
     public function setFirstName($firstName)
@@ -256,7 +258,7 @@ class Application_Model_User
     public static function getFirstAdminId()
     {
         $admin = self::getFirstAdmin();
-        if ($admin) { 
+        if ($admin) {
             return $admin->getDbId();
         } else {
             return null;
@@ -293,6 +295,14 @@ class Application_Model_User
         $sql = $sql ." ORDER BY login";
 
         return Application_Common_Database::prepareAndExecute($sql, $params, "all");
+    }
+    
+    public static function getAllUsers(){
+        $sql = <<<SQL
+        SELECT id, login, type, first_name, last_name, lastlogin, lastfail, skype_contact, jabber_contact, email, cell_phone
+        FROM cc_subjs
+SQL;
+        return Application_Common_Database::prepareAndExecute($sql, array(), "all");
     }
 
     public static function getUserCount()
@@ -340,6 +350,7 @@ class Application_Model_User
         return $res;
     }
 
+    // this is for RESTful GET
     public static function getUserData($id)
     {
         $sql = <<<SQL
@@ -350,6 +361,32 @@ WHERE id = :id
 SQL;
         return Application_Common_Database::prepareAndExecute($sql, array(
             ":id" => $id), 'single');
+    }
+    
+    // for RESTful PUT
+    public function updateUser($data)
+    {
+        self::setLogin($data['login']);
+        self::setPassword($data['password']);
+        self::setFirstName($data['first_name']);
+        self::setLastName($data['last_name']);
+        self::setEmail($data['email']);
+        self::setCellPhone($data['cell_phone']);
+        self::setSkype($data['skype_contact']);
+        self::setJabber($data['jabber_contact']);
+        self::setType($data['type']);
+        self::save();
+    }
+    
+    public static function isLoginExist($login) {
+        $sql = <<<SQL
+SELECT count(*)
+FROM cc_subjs
+WHERE login = :login
+SQL;
+        $out =  Application_Common_Database::prepareAndExecute($sql, array(
+                ":login" => $login), 'single');
+        return $out['count'] > 0 ? true:false;
     }
 
     public static function getCurrentUser()

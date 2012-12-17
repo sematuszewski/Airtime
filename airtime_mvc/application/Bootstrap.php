@@ -184,6 +184,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         $front = Zend_Controller_Front::getInstance();
         $router = $front->getRouter();
+        
+        $front->registerPlugin(new Zend_Controller_Plugin_PutHandler());
 
         $router->addRoute(
             'password-change',
@@ -193,7 +195,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 'action' => 'password-change',
             )));
         $restRoute = new Zend_Rest_Route($front, array(), array('default'=>
-                array('filerest')));
+                array('user-rest')));
         $router->addRoute('rest', $restRoute);
     }
 }
