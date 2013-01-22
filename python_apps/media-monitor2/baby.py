@@ -24,6 +24,13 @@ def autoscan_instances(main_cfg):
             instances.append(ai)
     return instances
 
+def fixed_list():
+    instances = []
+    full_path = '/mnt/airtimepro/instances/9/98'
+    ai = AirtimeInstance.root_make(get_name(full_path), full_path)
+    instances.append(ai)
+    return instances
+
 def verify_exists(p):
     if not exists(p): raise Exception("%s must exist" % p)
 
@@ -32,7 +39,8 @@ def main(main_cfg):
     verify_exists(log_config)
     log = setup_logger(log_config, log_path)
     setup_global(log)
-    for instance in autoscan_instances(main_cfg):
+    #for instance in autoscan_instances(main_cfg):
+    for instance in fixed_list():
         print("Launching instance: %s" % str(instance))
         #MM2(instance).start()
     print("Launched all instances")
