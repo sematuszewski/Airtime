@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Airtime 2.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-15 10:36-0500\n"
-"PO-Revision-Date: 2013-01-31 11:29+0100\n"
+"PO-Revision-Date: 2013-01-31 11:58+0100\n"
 "Last-Translator: Sebastian Matuszewski <sematuszewski@gmail.com>\n"
 "Language-Team: SEMATpl & PallottiFM <serwer@pallotti.fm>\n"
 "MIME-Version: 1.0\n"
@@ -170,7 +170,7 @@ msgstr "Wybierz kraj"
 #: airtime_mvc/application/models/MusicDir.php:160
 #, php-format
 msgid "%s is already watched."
-msgstr "%s  jest teraz przesukiwany."
+msgstr "%s  jest teraz przeszukiwany."
 
 #: airtime_mvc/application/models/MusicDir.php:164
 #, php-format
@@ -2069,7 +2069,7 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/LocaleController.php:141
 msgid "Processing..."
-msgstr ""
+msgstr "Przetwarzanie..."
 
 #: airtime_mvc/application/controllers/LocaleController.php:155
 msgid "Played"
@@ -2104,7 +2104,7 @@ msgstr ""
 #: airtime_mvc/application/controllers/LocaleController.php:167
 #: airtime_mvc/application/views/scripts/preference/directory-config.phtml:2
 msgid "Manage Media Folders"
-msgstr ""
+msgstr "Zarządzaj folderami mediów"
 
 #: airtime_mvc/application/controllers/LocaleController.php:168
 msgid "Are you sure you want to remove the watched folder?"
@@ -2120,7 +2120,7 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/LocaleController.php:172
 msgid "The stream is disabled"
-msgstr ""
+msgstr "Strumień jest wyłączony"
 
 #: airtime_mvc/application/controllers/LocaleController.php:174
 msgid "Can not connect to the streaming server"
@@ -2403,7 +2403,7 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/LocaleController.php:272
 msgid "Duration"
-msgstr ""
+msgstr "Czas trwania"
 
 #: airtime_mvc/application/controllers/LocaleController.php:278
 msgid "Cue In"
@@ -2444,7 +2444,7 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/LocaleController.php:293
 msgid "Select all"
-msgstr ""
+msgstr "Wybierz wszystko"
 
 #: airtime_mvc/application/controllers/LocaleController.php:294
 msgid "Select none"
@@ -2474,7 +2474,7 @@ msgstr ""
 #: airtime_mvc/application/controllers/ScheduleController.php:261
 #: airtime_mvc/application/views/scripts/showbuilder/index.phtml:15
 msgid "Add / Remove Content"
-msgstr ""
+msgstr "Dodaj/usuń zawartość"
 
 #: airtime_mvc/application/controllers/LocaleController.php:306
 msgid "in use"
@@ -2546,19 +2546,19 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/LocaleController.php:330
 msgid "Manage preferences"
-msgstr ""
+msgstr "Zarządzaj preferencjami"
 
 #: airtime_mvc/application/controllers/LocaleController.php:331
 msgid "Manage users"
-msgstr ""
+msgstr "Zarządzaj użytkownikami"
 
 #: airtime_mvc/application/controllers/LocaleController.php:332
 msgid "Manage watched folders"
-msgstr ""
+msgstr "Zarządzaj przeszukiwanymi katalogami"
 
 #: airtime_mvc/application/controllers/LocaleController.php:334
 msgid "View system status"
-msgstr ""
+msgstr "Zobacz status systemu"
 
 #: airtime_mvc/application/controllers/LocaleController.php:335
 msgid "Access playout history"
@@ -2566,31 +2566,31 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/LocaleController.php:336
 msgid "View listener stats"
-msgstr ""
+msgstr "Zobacz statystyki słuchacza"
 
 #: airtime_mvc/application/controllers/LocaleController.php:338
 msgid "Show / hide columns"
-msgstr ""
+msgstr "Pokaż/ukryj kolumny"
 
 #: airtime_mvc/application/controllers/LocaleController.php:340
 msgid "From {from} to {to}"
-msgstr ""
+msgstr "Z {from} do {to}"
 
 #: airtime_mvc/application/controllers/LocaleController.php:341
 msgid "kbps"
-msgstr ""
+msgstr "kbps"
 
 #: airtime_mvc/application/controllers/LocaleController.php:342
 msgid "yyyy-mm-dd"
-msgstr ""
+msgstr "yyyy-mm-dd"
 
 #: airtime_mvc/application/controllers/LocaleController.php:343
 msgid "hh:mm:ss.t"
-msgstr ""
+msgstr "hh:mm:ss.t"
 
 #: airtime_mvc/application/controllers/LocaleController.php:344
 msgid "kHz"
-msgstr ""
+msgstr "kHz"
 
 #: airtime_mvc/application/controllers/LocaleController.php:347
 msgid "Su"
@@ -2905,11 +2905,11 @@ msgstr ""
 
 #: airtime_mvc/application/controllers/ScheduleController.php:264
 msgid "Remove All Content"
-msgstr ""
+msgstr "Usuń całą zawartość"
 
 #: airtime_mvc/application/controllers/ScheduleController.php:271
 msgid "Show Content"
-msgstr ""
+msgstr "Pokaż zawartość"
 
 #: airtime_mvc/application/controllers/ScheduleController.php:295
 #: airtime_mvc/application/controllers/ScheduleController.php:302
@@ -3432,7 +3432,7 @@ msgstr ""
 
 #: airtime_mvc/application/views/scripts/form/register-dialog.phtml:1
 msgid "Register Airtime"
-msgstr ""
+msgstr "Zarejestruj Airtime"
 
 #: airtime_mvc/application/views/scripts/form/register-dialog.phtml:6
 #, php-format
@@ -3470,7 +3470,7 @@ msgstr ""
 
 #: airtime_mvc/application/views/scripts/form/register-dialog.phtml:178
 msgid "Terms and Conditions"
-msgstr ""
+msgstr "Zasady i warunki"
 
 #: airtime_mvc/application/views/scripts/form/showbuilder.phtml:7
 msgid "Find Shows"
@@ -3491,17 +3491,17 @@ msgstr ""
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:115
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:159
 msgid "Override"
-msgstr ""
+msgstr "Zastąp"
 
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:120
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:164
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:120
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:164
 msgid "RESET"
-msgstr ""
+msgstr "RESETUJ"
 
 #: airtime_mvc/application/views/scripts/form/preferences_livestream.phtml:153
 msgid "Show Source Connection URL:"
@@ -3522,11 +3522,11 @@ msgstr ""
 
 #: airtime_mvc/application/views/scripts/form/preferences.phtml:5
 msgid "Email / Mail Server Settings"
-msgstr ""
+msgstr "Ustawienia Email/Serwera pocztowego"
 
 #: airtime_mvc/application/views/scripts/form/preferences.phtml:10
 msgid "SoundCloud Settings"
-msgstr ""
+msgstr "Ustawienia SoundCloud"
 
 #: airtime_mvc/application/views/scripts/form/support-setting.phtml:5
 #, php-format
@@ -3575,47 +3575,47 @@ msgstr ""
 #: airtime_mvc/application/views/scripts/showbuilder/builderDialog.phtml:3
 #: airtime_mvc/application/views/scripts/library/library.phtml:2
 msgid "File import in progress..."
-msgstr ""
+msgstr "Importowanie plików w toku..."
 
 #: airtime_mvc/application/views/scripts/showbuilder/builderDialog.phtml:5
 #: airtime_mvc/application/views/scripts/library/library.phtml:5
 msgid "Advanced Search Options"
-msgstr ""
+msgstr "Zaawansowane opcje wyszukiwania"
 
 #: airtime_mvc/application/views/scripts/preference/stream-setting.phtml:2
 msgid "Stream Settings"
-msgstr ""
+msgstr "Ustawienia strumienia"
 
 #: airtime_mvc/application/views/scripts/preference/stream-setting.phtml:12
 msgid "Global Settings"
-msgstr ""
+msgstr "Ustawienia globalne"
 
 #: airtime_mvc/application/views/scripts/preference/stream-setting.phtml:88
 msgid "dB"
-msgstr ""
+msgstr "dB"
 
 #: airtime_mvc/application/views/scripts/preference/stream-setting.phtml:107
 msgid "Output Stream Settings"
-msgstr ""
+msgstr "Ustawienia strumienia wyjściowego"
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:7
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:30
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:32
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:128
 msgid "Length:"
-msgstr ""
+msgstr "Długość: "
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:8
 msgid "Sample Rate:"
-msgstr ""
+msgstr "Częstotliwość próbkowania:"
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:18
 msgid "Isrc Number:"
-msgstr ""
+msgstr "Numer Isrc:"
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:21
 msgid "File Path:"
-msgstr ""
+msgstr "Ścieżka pliku:"
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:39
 msgid "Web Stream"
@@ -3635,7 +3635,7 @@ msgstr ""
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:48
 msgid "Playlist Contents: "
-msgstr ""
+msgstr "Zawartość listy odtwarzania:"
 
 #: airtime_mvc/application/views/scripts/library/get-file-metadata.ajax.phtml:50
 msgid "Static Smart Block Contents: "
